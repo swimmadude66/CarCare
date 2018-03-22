@@ -76,7 +76,29 @@ module.exports = {
         new workbox.GenerateSW({
             swDest: 'sw.js',
             clientsClaim: true,
-            skipWaiting: true
+            skipWaiting: true,
+            include: [/assets/, /\.((css)|(jpg)|(png)|(svg))/, /fonts/],
+            exclude: [/manifest/],
+            runtimeCaching: [{
+                // Match any same-origin request that contains 'api'.
+                urlPattern: /api/,
+                // Apply a network-first strategy.
+                handler: 'networkFirst',
+                options: {
+                  // Fall back to the cache after 10 seconds.
+                  networkTimeoutSeconds: 10,
+                  // Use a custom cache name for this route.
+                  cacheName: 'api-cache',
+                  // Configure custom cache expiration.
+                  expiration: {
+                    maxEntries: 10
+                  },
+                  // Configure which responses are considered cacheable.
+                  cacheableResponse: {
+                    statuses: [0, 200]
+                  }
+                }
+            }]
         })
     ]
 };

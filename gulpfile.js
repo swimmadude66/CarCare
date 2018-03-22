@@ -2,10 +2,13 @@ var fs          	= require('fs');
 var path			= require('path');
 var spawn            = require('child_process').spawn;
 var gulp        	= require('gulp');
-var sass            = require('node-sass');
+var sass            = require('gulp-sass');
 var webpack         = require('webpack');
 var webpackConfig   = require('./webpack.config');
 var browserSync     = require('browser-sync-webpack-plugin');
+var postcss         = require('gulp-postcss');
+var uncss           = require('postcss-uncss');
+var cleancss        = require('postcss-clean');
 var ts_project	    = require('gulp-typescript').createProject('./src/server/tsconfig.json');
 
 var server_proc;
@@ -26,18 +29,11 @@ gulp.task('compile_node', function(){
 	.pipe(gulp.dest('dist/server/'));
 });
 
-gulp.task('compile_root_styles', ['copy_client_assets'], function(done){
-    sass.render({
-        file: 'src/client/styles.scss',
-        outputStyle: 'compressed',
-        importer: sassNodeModulesImporter
-    }, function(err, result){
-        if(err){
-            throw err;
-        }
-        fs.writeFileSync('dist/client/styles.min.css', result.css);
-        return done();
-    });
+gulp.task('compile_root_styles', ['copy_client_assets'], function() {
+    return gulp.src('src/client/*.scss')
+    .pipe(sass({importer: sassNodeModulesImporter}).on('error', (err) => console.log(err)))
+    .pipe(postcss([uncss({html: ['src/client/index.html', 'src/client/**/*.html']}), cleancss()]))
+    .pipe(gulp.dest('dist/client'));
 });
 
 gulp.task('copy_client_assets', function(){

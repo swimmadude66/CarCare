@@ -46,5 +46,5 @@ module.exports = (APP_CONFIG, SERVICES: Services) => {
 
     // PRIVATE
 
-
+    return router;
 }

@@ -19,7 +19,7 @@ const APP_CONFIG: any = {
   cookie_secret: process.env.COOKIE_SECRET || 'cookie_secret',
   port: process.env.NODE_PORT || 3000,
   log_level: process.env.MORGAN_LOG_LEVEL || 'dev',
-  client_root: process.env.CLIENT_ROOT || join(__dirname, '../../client/web'),
+  client_root: process.env.CLIENT_ROOT || join(__dirname, '../client/'),
 };
 
 const app = express();

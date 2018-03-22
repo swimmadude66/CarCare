@@ -1,4 +1,5 @@
 import {Injectable} from '@angular/core';
+import {Observable} from 'rxjs/Rx';
 
 @Injectable()
 export class ItemService {
@@ -27,8 +28,8 @@ export class ItemService {
         { id: 25, name: 'Masip', role: 'Goalkeeper' },
     ];
 
-    getItems() {
-        return this.items;
+    getItems(): Observable<any[]> {
+        return Observable.of(this.items);
     }
 
     getItem(id: number) {

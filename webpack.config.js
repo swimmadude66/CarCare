@@ -91,11 +91,23 @@ module.exports = {
     },
     plugins: [
         new HtmlWebpackPlugin({
-            chunksSortMode: 'dependency',
             filename: path.join(__dirname, './dist/client/index.html'),
             template: path.join(__dirname, './src/client/index.html'),
             inject: 'body',
-            hash: true
+            hash: true,
+            chunksSortMode: function(a,b) {
+                if (a.names[0] === 'common') {
+                    return -1;
+                }
+                if (a.names[0] === 'app') {
+                    return 1;
+                }
+                if (a.names[0] === 'vendor' && b.names[0] === 'app') {
+                    return -1;
+                } else {
+                    return 1;
+                }
+            },
         }),
         new AotPlugin({
             tsConfigPath: path.join(__dirname, './src/client/tsconfig.json'),
@@ -114,6 +126,8 @@ module.exports = {
         new commonsChunkPlugin({
             name: 'common',
             minChunks: 2,
+            async: false,
+            children: false,
             chunks: ['app', 'vendor']
         }),
         new ExtractTextPlugin({

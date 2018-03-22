@@ -4,18 +4,17 @@ import {FormsModule} from '@angular/forms';
 import {BrowserModule} from '@angular/platform-browser';
 import {CommonModule} from '@angular/common';
 import {HttpClientModule} from '@angular/common/http';
-import {AppComponent, DemoComponent} from '../components/';
-import {ItemService} from '../services';
+import {AppComponent, DemoComponent} from '@components/';
+import {ItemService} from '@services/';
+import {SharedModule} from '@modules/shared';
 
 @NgModule({
     bootstrap: [
         AppComponent
     ],
     imports: [
-        RouterModule,
         BrowserModule,
-        CommonModule,
-        FormsModule,
+        SharedModule,
         HttpClientModule,
         RouterModule.forRoot(
             [

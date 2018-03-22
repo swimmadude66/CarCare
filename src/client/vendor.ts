@@ -4,3 +4,5 @@ import 'zone.js/dist/long-stack-trace-zone';
 import 'bootstrap';
 import 'tether';
 import 'popper.js';
+
+import 'rxjs/Rx';

@@ -1,49 +1,15 @@
-var fs          	= require('fs');
-var path			= require('path');
-var spawn            = require('child_process').spawn;
 var gulp        	= require('gulp');
-var sass            = require('gulp-sass');
 var webpack         = require('webpack');
 var webpackConfig   = require('./webpack.config');
 var browserSync     = require('browser-sync-webpack-plugin');
-var postcss         = require('gulp-postcss');
-var uncss           = require('postcss-uncss');
-var cleancss        = require('postcss-clean');
 var ts_project	    = require('gulp-typescript').createProject('./src/server/tsconfig.json');
-
+var spawn            = require('child_process').spawn;
 var server_proc;
-
-function sassNodeModulesImporter(url, file, done){
-    // if it starts with a tilde, search in node_modules;
-    if (url.indexOf('~') === 0){
-        var nmPath = path.join(__dirname, 'node_modules', url.substring(1)||'');
-        return done({ file: nmPath });
-    } else {
-        return done({ file: url });
-    }
-}
 
 gulp.task('compile_node', function(){
 	return gulp.src('./src/server/**/*.ts')
 	.pipe(ts_project()).js
 	.pipe(gulp.dest('dist/server/'));
-});
-
-gulp.task('compile_root_styles', ['copy_client_assets'], function() {
-    return gulp.src('src/client/*.scss')
-    .pipe(sass({importer: sassNodeModulesImporter}).on('error', (err) => console.log(err)))
-    .pipe(postcss([uncss({html: ['src/client/index.html', 'src/client/**/*.html']}), cleancss()]))
-    .pipe(gulp.dest('dist/client'));
-});
-
-gulp.task('copy_client_assets', function(){
-  return gulp.src(['src/client/assets/**/*'])
-      .pipe(gulp.dest('dist/client/assets'));
-});
-
-gulp.task('copy_fonts', ['copy_client_assets'], function(){
-  return gulp.src(['node_modules/font-awesome/fonts/*', 'src/client/fonts/*'])
-      .pipe(gulp.dest('dist/client/fonts'));
 });
 
 gulp.task('start-server', ['compile_node'], function(){
@@ -131,15 +97,10 @@ gulp.task('webpack-watch', function() {
     });
 });
 
-gulp.task('copy', ['compile_root_styles', 'copy_client_assets', 'copy_fonts']);
-
-gulp.task('watch', ['copy', 'start-server', 'webpack-watch'], function(){
+gulp.task('watch', ['start-server', 'webpack-watch'], function(){
   	console.log('watching for changes...');
-	gulp.watch(['src/client/assets/**/*'], ['copy_client_assets']);
-	gulp.watch(['src/client/styles.scss'], ['compile_root_styles']);
-	gulp.watch(['node_modules/font-awesome/fonts/*', 'src/client/fonts/*'], ['copy_fonts']);
 	gulp.watch(['src/server/**/*.ts'], ['start-server']);
 });
 
 // Default Task
-gulp.task('default', ['copy', 'compile_node', 'webpack']);
+gulp.task('default', ['compile_node', 'webpack']);

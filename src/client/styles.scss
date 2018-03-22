@@ -1,6 +1,4 @@
 @import '~bootstrap/scss/bootstrap';
-@import '~font-awesome/scss/font-awesome';
 
-p {
-    color: black;
-}
+@import 'styles/_variables';
+@import '~font-awesome/scss/font-awesome';

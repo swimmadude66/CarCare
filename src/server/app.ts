@@ -1,7 +1,7 @@
 import {join} from 'path';
 import {readFileSync} from 'fs';
 import {createServer} from 'http';
-import * as https from 'https';
+import * as spdy from 'spdy';
 import * as bodyParser from 'body-parser';
 import * as cookieParser from 'cookie-parser';
 import * as compress from 'compression';
@@ -14,7 +14,7 @@ import { Services } from './models/config';
 dotenv.config({silent: true});
 
 const APP_CONFIG: any = {
-  environment: process.env.ENVIRONMENT || 'dev',
+  environment: process.env.ENVIRONMENT || 'short',
   cookie_name: process.env.COOKIE_NAME || '__cc',
   cookie_secret: process.env.COOKIE_SECRET || 'cookie_secret',
   port: process.env.NODE_PORT || 3000,
@@ -37,7 +37,7 @@ if (process.env.HTTPS) {
         ca: (process.env.SSLCHAIN ? tryLoad(process.env.SSLCHAIN) : undefined),
         pfx: (process.env.SSLPFX ? tryLoad(process.env.SSLPFX) : undefined)
     };
-    server = https.createServer(ssl_config, app);
+    server = spdy.createServer(ssl_config, app);
     let redir = express();
     redir.get('*', (req, res, next) => {
       let httpshost = `https://${req.headers.host}${req.url}`;

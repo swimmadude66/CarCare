@@ -9,7 +9,7 @@ export class SessionManager {
     constructor (private _db: DatabaseService) {}
 
     getUserSession(sessionKey: string): Observable<UserSession> {
-        const q = 'Select u.Email, s.SessionKey, s.Expires from `sessions` s'
+        const q = 'Select u.UserId, u.Email, s.SessionKey, s.Expires from `sessions` s'
         + ' join `users` u on u.UserId = s.UserId'
         + ' where s.Active=1 AND u.Active=1 AND s.SessionKey=? AND s.Expires > ? LIMIT 1;';
         return this._db.query(q, [sessionKey, Math.floor(new Date().valueOf()/1000)])

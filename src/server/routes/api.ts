@@ -18,7 +18,7 @@ module.exports = (APP_CONFIG: Config) => {
         sessionManager.getUserSession(authZ)
         .do(result => {
             if (result && result.SessionKey) {
-                sessionManager.updateAccess(result.SessionKey);
+                sessionManager.updateAccess(result.SessionKey).subscribe(_ => _, err=> console.error(err));
             }
         })
         .subscribe(

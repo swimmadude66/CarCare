@@ -30,7 +30,7 @@ export class SessionManager {
         const sessionId = uuid().replace(/\-/ig, '');
         const now = Math.floor(new Date().valueOf()/1000);
         const expires = now + EXPIRATION_SECONDS; // 30 day expiration for now
-        const q = 'Insert into `sessions` (`SessionKey`, `UserId`, `Expires`, `UserAgent`, `LastAccess`) VALUES (?, ?, ?, ?, ?);';
+        const q = 'Insert into `sessions` (`SessionKey`, `UserId`, `Expires`, `UserAgent`, `LastUsed`) VALUES (?, ?, ?, ?, ?);';
         return this._db.query(q, [sessionId, userId, expires, userAgent, now])
         .map(_ => ({SessionKey: sessionId, Expires: expires}));
     }
@@ -41,6 +41,7 @@ export class SessionManager {
 
     updateAccess(sessionKey: string): Observable<any> {
         const now = Math.floor(new Date().valueOf()/1000);
-        return this._db.query('Update `sessions` SET `LastAccess`=? WHERE `SessionKey`=?', [now, sessionKey]);
+        return this._db.query('Update `sessions` SET `LastUsed`=? WHERE `SessionKey`=?', [now, sessionKey])
+        .do(result => console.log(result));
     }
 }

@@ -16,6 +16,11 @@ module.exports = (APP_CONFIG: Config) => {
         }
         const authZ = req.signedCookies[APP_CONFIG.cookie_name];
         sessionManager.getUserSession(authZ)
+        .do(result => {
+            if (result && result.SessionKey) {
+                sessionManager.updateAccess(result.SessionKey);
+            }
+        })
         .subscribe(
             result => {
                 if (!result) {
@@ -24,6 +29,7 @@ module.exports = (APP_CONFIG: Config) => {
                 res.locals.usersession = result;
                 return next();
             }, err => {
+                console.error(err);
                 return next();
             }
         );
@@ -42,6 +48,7 @@ module.exports = (APP_CONFIG: Config) => {
     });
 
     // PRIVATE
+    router.use('/cars', require('./cars')(APP_CONFIG));
 
     return router;
 }

@@ -17,7 +17,7 @@ module.exports = (APP_CONFIG: Config) => {
             const salt = uuid().replace(/-/ig, '');
             const passHash = createHash('sha512').update(`${salt}|${body.Password}`).digest('hex');
             db.query('Insert into `users` (`Email`, `Salt`, `PassHash`, `Active`) VALUES(?, ?, ?, 1);', [body.Email, salt, passHash])
-            .flatMap(result => sessionManager.createSession(result.insertId))
+            .flatMap(result => sessionManager.createSession(result.insertId, JSON.stringify(res.useragent)))
             .subscribe(
                 result => {
                     res.cookie(APP_CONFIG.cookie_name, result.SessionKey, {
@@ -30,7 +30,10 @@ module.exports = (APP_CONFIG: Config) => {
                     });
                     return res.send();
                 },
-                err => res.status(400).send('Could not complete signup')
+                err => {
+                    console.error(err);
+                    res.status(400).send('Could not complete signup');
+                }
             );
         }
     });
@@ -49,7 +52,7 @@ module.exports = (APP_CONFIG: Config) => {
                     }
                     const compHash = createHash('sha512').update(`${user.Salt}|${body.Password}`).digest('hex');
                     if (compHash === user.PassHash) {
-                        return sessionManager.createSession(user.UserId);
+                        return sessionManager.createSession(user.UserId, JSON.stringify(res.useragent));
                     } else {
                         return Observable.throw('Incorrect username or password');
                     }
@@ -70,6 +73,7 @@ module.exports = (APP_CONFIG: Config) => {
                     if (err === 'Incorrect username or password') {
                         return res.status(400).send('Incorrect username or password');
                     } else {
+                        console.error(err);
                         return res.status(500).send('Could not login at this time');
                     }
                 }

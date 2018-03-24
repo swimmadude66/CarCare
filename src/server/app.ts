@@ -8,6 +8,7 @@ import * as compress from 'compression';
 import * as express from 'express';
 import * as morgan from 'morgan';
 import * as dotenv from 'dotenv';
+import * as userAgent from 'express-useragent';
 import {Config} from './models/config';
 import {DatabaseService} from './services/db';
 import {SessionManager} from './services/session';
@@ -31,6 +32,7 @@ const APP_CONFIG: Config = {
 
 const app = express();
 app.use(compress());
+app.use(userAgent.express());
 app.use(bodyParser.json({limit: '100mb'}));
 app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 app.use(cookieParser(APP_CONFIG.cookie_secret));

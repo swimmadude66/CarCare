@@ -21,16 +21,46 @@ export class CarService {
         )
     }
 
-    addUpdateCar(userId: number, car: Car): Observable<any> {
-        const q = 'Insert into `cars` (`CarId`, `Make`, `Model`, `Trim`, `Color`, `Owner`, `CarName`, `License`, `VIN`, `PurchaseDate`, `CarPhoto`)'
-        + ' VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
-        + ' ON DUPLICATE KEY UPDATE `Make`=VALUES(`Make`), `Model`=VALUES(`Model`), `Trim`=VALUES(`Trim`), `Color`=VALUES(`Color`), `Owner`=VALUES(`Owner`),'
-        + ' `CarName`=VALUES(`CarName`), `License`=VALUES(`License`), `VIN`=VALUES(`VIN`), `PurchaseDate`=VALUES(`PurchaseDate`), `CarPhoto`=VALUES(`CarPhoto`);';
-        return this._db.query(q, [car.CarId, car.Make, car.Model, car.Trim, car.Color, userId, car.CarName, car.License, car.VIN, car.PurchaseDate, car.CarPhoto])
+    addCar(userId: number, car: Car): Observable<any> {
+        const q = 'Insert into `cars` (`Make`, `Model`, `Trim`, `Color`, `Owner`, `CarName`, `License`, `VIN`, `PurchaseDate`, `CarPhoto`)'
+        + ' VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);';
+        return this._db.query(q, [car.Make, car.Model, car.Trim, car.Color, userId, car.CarName, car.License, car.VIN, car.PurchaseDate, car.CarPhoto])
         .flatMap(result => {
             const carId = result.insertId;
-            if (car.Metadata && Object.keys(car.Metadata).length) {
+            if (carId && car.Metadata && Object.keys(car.Metadata).length) {
                 return this._mapMetadata(carId, car.Metadata).map(_ => carId);
+            } else {
+                return Observable.of(carId);
+            }
+        });
+    }
+
+    updateCar(userId: number, car: Car): Observable<any> {
+        const carId = car.CarId;
+        delete car.Owner;
+        delete car.CarId;
+        const q = 'Update `cars`, SET ? WHERE `Owner`=? and `CarId`=?;';
+        return this._db.query(q, [car, userId, carId])
+        .flatMap(result => {
+            if (result.affectedRows) {
+                if(car.Metadata && Object.keys(car.Metadata).length) {
+                    return this._mapMetadata(carId, car.Metadata)
+                    .flatMap(_ => this._removeExtraMetadata(carId, car.Metadata))
+                    .map(_ => carId);
+                } else {
+                    return this._removeExtraMetadata(carId, car.Metadata).map(_ => carId);
+                }
+            } else {
+                return Observable.of(carId);
+            }
+        });
+    }
+
+    deleteCar(userId: number, carId: number): Observable<any> {
+        return this._db.query('Delete from `cara` WHERE `CarId`=? AND `Owner`=?;', [carId, userId])
+        .flatMap(result => {
+            if (result.affectedRows) {
+                return this._removeExtraMetadata(carId, {}).map(_ => carId);
             } else {
                 return Observable.of(carId);
             }
@@ -59,5 +89,11 @@ export class CarService {
         + this._db.escape(rows) 
         + ') ON DUPLICATE KEY UPDATE `Value`=VALUES(`Value`);';
         return this._db.query(q);
+    }
+
+    private _removeExtraMetadata(carId: number, metadata: {[Key: string]: string}): Observable<any> {
+        const keys = Object.keys(metadata);
+        const q = 'Delete from `car_metadata` Where `CarId`=? AND `Key` not in (?)';
+        return this._db.query(q, [carId, keys]);
     }
 }

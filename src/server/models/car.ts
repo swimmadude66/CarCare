@@ -8,7 +8,7 @@ export interface Car {
     CarName?: string; // varchar(64) DEFAULT NULL,
     License?: string; // varchar(32) DEFAULT NULL,
     VIN?: string; // varchar(64) DEFAULT NULL,
-    PurchaseDate: Date; // date DEFAULT NULL,
+    PurchaseDate?: Date; // date DEFAULT NULL,
     CarPhoto?: string; // text,
-    Metadata: {[key: string]: string}; // MAPPED FROM EXTERNAL TABLE
+    Metadata?: {[key: string]: string}; // MAPPED FROM EXTERNAL TABLE
 }

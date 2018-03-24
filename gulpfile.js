@@ -17,7 +17,7 @@ gulp.task('start-server', ['compile_node'], function(){
         server_proc.kill();
         server_proc = undefined;
     }
-    server_proc = spawn('node', ['dist/server/app.js'], {
+    server_proc = spawn('node', ['dist/server/app.js', '--inspect=5858'], {
         cwd: __dirname,
         stdio: [0, 1, 2, 'ipc']
     });

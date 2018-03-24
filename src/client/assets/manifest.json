@@ -1,6 +1,6 @@
 {
-    "name": "Demo App",
-    "short_name": "Demo App",
+    "name": "Car Care",
+    "short_name": "Car Care",
     "icons": [
         {
             "src": "/assets/icons/android-chrome-192x192.png",
@@ -16,5 +16,5 @@
     "theme_color": "#3fbae8",
     "background_color": "#3fbae8",
     "display": "standalone",
-    "start_url": "../?utm_source=web_app_manifest"
+    "start_url": "../index.html"
 }

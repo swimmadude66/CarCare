@@ -1,30 +1,27 @@
 import {Router} from 'express';
-import {Services} from '../models/config';
+import {Config} from '../models/config';
 
-module.exports = (APP_CONFIG, SERVICES: Services) => {
+module.exports = (APP_CONFIG: Config) => {
     const router = Router();
-    const db = SERVICES.db;
+    const db = APP_CONFIG.db;
+    const sessionManager = APP_CONFIG.sessionManager;
 
     router.use((req, res, next) => {
         if (res.locals.usersession) {
             return next();
         }
         if (!req.signedCookies || !req.signedCookies[APP_CONFIG.cookie_name]) {
-            res.locals.user = null;
+            res.locals.usersession = null;
             return next();
         }
         const authZ = req.signedCookies[APP_CONFIG.cookie_name];
-        const q = 'Select u.Email, s.SessionId, s.Expires from `sessions` s'
-        + ' join `users` u on u.UserId = s.UserId'
-        + ' where s.Active=1 AND u.Active=1 AND s.SessionId=? AND s.Expires > ?;';
-        db.query(q, [authZ, Math.floor(new Date().valueOf()/1000)])
+        sessionManager.getUserSession(authZ)
         .subscribe(
             result => {
                 if (!result) {
                     return next();
                 }
-                const usersession = result;
-                res.locals.usersession = usersession;
+                res.locals.usersession = result;
                 return next();
             }, err => {
                 return next();
@@ -33,12 +30,12 @@ module.exports = (APP_CONFIG, SERVICES: Services) => {
     });
 
     // PUBLIC
-    router.use('/auth', require('./auth')(SERVICES));
+    router.use('/auth', require('./auth')(APP_CONFIG));
 
     // AuthGate
     router.use((req, res, next) => {
         if (!res.locals.usersession) {
-            return res.status(403).send('Unauthorized');
+            return res.status(401).send('Unauthenticated');
         } else {
             return next();
         }

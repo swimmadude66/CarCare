@@ -5,21 +5,23 @@ CREATE TABLE IF NOT EXISTS `users` (
   `Email` varchar(90) NOT NULL,
   `PassHash` varchar(64) NOT NULL,
   `Salt` varchar(32) NOT NULL,
-  `Confirm` varchar(32) NOT NULL,
+  `Confirm` varchar(32) DEFAULT NULL,
   `Active` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`UserId`),
   UNIQUE KEY `UserId_UNIQUE` (`UserId`),
-  UNIQUE KEY `Email_UNIQUE` (`Email`),
-  UNIQUE KEY `Confirm_UNIQUE` (`Confirm`)
+  UNIQUE KEY `Email_UNIQUE` (`Email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 
 CREATE TABLE IF NOT EXISTS `sessions` (
   `SessionId` int(11) NOT NULL AUTO_INCREMENT,
+  `SessionKey` varchar(32) NOT NULL,
   `UserId` int(11) NOT NULL,
   `Expires` bigint(20) NOT NULL,
   `Active` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`SessionId`),
-  UNIQUE KEY `SessionId_UNIQUE` (`SessionId`)
+  UNIQUE KEY `SessionId_UNIQUE` (`SessionId`),
+  UNIQUE KEY `SessionKey_UNIQUE` (`SessionKey`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `cars` (

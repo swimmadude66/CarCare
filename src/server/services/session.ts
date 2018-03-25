@@ -9,10 +9,11 @@ export class SessionManager {
     constructor (private _db: DatabaseService) {}
 
     getActiveSessions(userId: number): Observable<SessionInfo[]> {
-        return this._db.query('Select * from `sessions` where `UserId`=?', [userId])
+        return this._db.query('Select * from `sessions` where `UserId`=? AND `Active`=1', [userId])
         .map(sessions => {
             return sessions.map(s => {
                 s.LastUsed = new Date(s.LastUsed * 1000);
+                s.UserAgent = s.UserAgent ? JSON.parse(s.UserAgent) : null;
                 return s;
             });
         });
@@ -35,13 +36,13 @@ export class SessionManager {
         .map(_ => ({SessionKey: sessionId, Expires: expires}));
     }
 
-    deactivateSession(sessionKey: string): Observable<any> {
-        return this._db.query('Update `sessions` set `Active`=0 where `SessionKey`=?', [sessionKey]);
+    deactivateSession(userId: number, sessionKey: string): Observable<any> {
+        return this._db.query('Update `sessions` set `Active`=0 where `SessionKey`=? AND `UserId`=?', [sessionKey, userId])
+        .map(results => results.changedRows > 0);
     }
 
     updateAccess(sessionKey: string): Observable<any> {
         const now = Math.floor(new Date().valueOf()/1000);
-        return this._db.query('Update `sessions` SET `LastUsed`=? WHERE `SessionKey`=?', [now, sessionKey])
-        .do(result => console.log(result));
+        return this._db.query('Update `sessions` SET `LastUsed`=? WHERE `SessionKey`=?', [now, sessionKey]);
     }
 }

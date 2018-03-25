@@ -4,6 +4,13 @@ import * as uuid from 'uuid/v4';
 import {Observable} from 'rxjs/Rx';
 import {Config} from '../models/config';
 
+const COOKIE_OPTIONS = {
+    path: '/',
+    httpOnly: true,
+    signed: true,
+    sameSite: true,
+};
+
 module.exports = (APP_CONFIG: Config) => {
     const router = Router();
     const db = APP_CONFIG.db;
@@ -20,14 +27,7 @@ module.exports = (APP_CONFIG: Config) => {
             .flatMap(result => sessionManager.createSession(result.insertId, JSON.stringify(res.useragent)))
             .subscribe(
                 result => {
-                    res.cookie(APP_CONFIG.cookie_name, result.SessionKey, {
-                        expires: new Date(result.Expires * 1000),
-                        path: '/',
-                        httpOnly: true,
-                        secure: req.secure,
-                        signed: true,
-                        sameSite: true,
-                    });
+                    res.cookie(APP_CONFIG.cookie_name, result.SessionKey, {...COOKIE_OPTIONS, expires: new Date(result.Expires * 1000), secure: req.secure});
                     return res.send();
                 },
                 err => {
@@ -59,14 +59,7 @@ module.exports = (APP_CONFIG: Config) => {
                 }
             ).subscribe(
                 result => {
-                    res.cookie(APP_CONFIG.cookie_name, result.SessionKey, {
-                        expires: new Date(result.Expires * 1000),
-                        path: '/',
-                        httpOnly: true,
-                        secure: req.secure,
-                        signed: true,
-                        sameSite: true,
-                    });
+                    res.cookie(APP_CONFIG.cookie_name, result.SessionKey, {...COOKIE_OPTIONS, expires: new Date(result.Expires * 1000), secure: req.secure});
                     return res.send();
                 },
                 err => {
@@ -85,9 +78,43 @@ module.exports = (APP_CONFIG: Config) => {
         return res.send(!!res.locals.usersession);
     });
 
+    router.get('/sessions', (req, res) => {
+        if (!res.locals.usersession || !res.locals.usersession.UserId) {
+            return res.send([]);
+        }
+        sessionManager.getActiveSessions(res.locals.usersession.UserId)
+        .subscribe(
+            sessions => res.send(sessions),
+            err => {
+                console.error(err);
+                res.status(500).send('Cannot fetch active sessions');
+            }
+        )
+    });
+
+    router.delete('/sessions/:sessionKey', (req, res) => {
+        const sessionKey = req.params['sessionKey'];
+        if (res.locals.usersession && res.locals.usersession.UserId && res.locals.usersession.SessionKey) {
+            sessionManager.deactivateSession(res.locals.usersession.UserId, sessionKey)
+            .subscribe(
+                success => {
+                    if (success) {
+                        if (res.locals.usersession.SessionKey === sessionKey) {
+                            res.clearCookie(APP_CONFIG.cookie_name, {...COOKIE_OPTIONS, secure: req.secure});
+                        }
+                        return res.send(success);
+                    } else {
+                        return res.status(400).send('Could not find that session');
+                    }
+                }  
+            )
+        }
+    });
+
     router.post('/logout', (req, res) => {
-        if (res.locals.usersession && res.locals.usersession.SessionKey) {
-            sessionManager.deactivateSession(res.locals.usersession.SessionKey)
+        if (res.locals.usersession && res.locals.usersession.SessionKey && res.locals.usersession.UserId) {
+            res.clearCookie(APP_CONFIG.cookie_name, {...COOKIE_OPTIONS, secure: req.secure});
+            sessionManager.deactivateSession(res.locals.usersession.UserId, res.locals.usersession.SessionKey)
             .finally(() => res.send(true))
             .subscribe(
                 _ => _,

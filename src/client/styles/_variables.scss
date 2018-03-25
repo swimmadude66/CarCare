@@ -1,1 +1,18 @@
 $main_color: #3fbae8;
+
+// GRID VARS
+$num-columns: 12;
+
+$gutter: 1rem;
+$outer-gutter: 2rem;
+$row-compensation: -0.5rem;
+$col-compensation: 0.5rem;
+
+$screen-xs-min: 0;
+$screen-sm-min: 45rem;
+$screen-md-min: 64rem;
+$screen-lg-min: 75rem;
+
+$container-sm: 46rem;
+$container-md: 65rem;
+$container-lg: 76rem;

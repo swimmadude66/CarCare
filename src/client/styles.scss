@@ -1,9 +1,17 @@
-@import '~bootstrap/scss/bootstrap';
+@import '~normalize-scss/sass/_normalize';
 // point to fa-fonts before import
 $fa-font-path : '../../node_modules/font-awesome/fonts';
 @import '~font-awesome/scss/font-awesome';
+
 @import 'styles/_variables';
+@import 'styles/_grid';
+@import 'styles/_helpers';
 
 html, body {
-    height: 100%;
+    height: 100%; // Default to full page
+    font-size: 16px; // base font-size for rem
+    min-width: 20rem; // set a hard stop of minimum width
+}
+body {
+    box-sizing: border-box;
 }

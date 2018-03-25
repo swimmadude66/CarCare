@@ -1,0 +1,7 @@
+@import '../../styles/_variables';
+
+.page-row {
+    @media(min-width: $screen-md-min) {
+        align-items: center;
+    }
+}

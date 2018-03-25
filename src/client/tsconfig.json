@@ -5,6 +5,7 @@
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
         "noEmitHelpers": true,
+        "importHelpers": true,
         "noEmitOnError": true,
         "lib": [
             "es6",
@@ -14,6 +15,7 @@
         "baseUrl": ".",
         "paths": {
             "@components/*": ["components/*", "components/index"],
+            "@core/*": ["core/*", "core/index"],
             "@models/*": ["models/*", "models/index"],
             "@modules/*": ["modules/*", "modules/index"],
             "@services/*": ["services/*", "services/index"],

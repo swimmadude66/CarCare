@@ -4,6 +4,7 @@ var workbox = require('workbox-webpack-plugin');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var uncss = require('postcss-uncss');
+var autoprefixer = require('autoprefixer');
 var CopyWebpackPlugin = require('copy-webpack-plugin');
 var CircularDependencyPlugin = require('circular-dependency-plugin');
 var AotPlugin = require('@ngtools/webpack').AngularCompilerPlugin;
@@ -35,7 +36,19 @@ module.exports = {
                 use: [
                     {
                         loader: 'raw-loader'
-                    }, 
+                    },
+                    {
+                        loader: 'postcss-loader',
+                        options: {
+                            ident: 'postcss',
+                            plugins: function(loader){
+                                return [
+                                    uncss({html: [path.join(__dirname, './src/client/index.html'), path.join(__dirname, './src/client/**/*.html')]}),
+                                    autoprefixer
+                                ]
+                            }
+                        }
+                    },
                     {
                         loader:'sass-loader',
                         options: {
@@ -62,7 +75,8 @@ module.exports = {
                                 ident: 'postcss',
                                 plugins: function(loader){
                                     return [
-                                        uncss({html: [path.join(__dirname, './src/client/index.html'), path.join(__dirname, './src/client/**/*.html')]})
+                                        uncss({html: [path.join(__dirname, './src/client/index.html'), path.join(__dirname, './src/client/**/*.html')]}),
+                                        autoprefixer
                                     ]
                                 }
                             }

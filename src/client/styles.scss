@@ -3,3 +3,7 @@
 $fa-font-path : '../../node_modules/font-awesome/fonts';
 @import '~font-awesome/scss/font-awesome';
 @import 'styles/_variables';
+
+html, body {
+    height: 100%;
+}

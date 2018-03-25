@@ -1,7 +1,10 @@
+// root font size
+$root-font-size: 10px; // 1rem = 10px;
+
 // Colors
 $main_color: #3fbae8;
-$error_color: #f31b1b;
-$success-color: #14f870;
+$error_color: #d9534f;
+$success-color: #449d44;
 
 // Scaffolding
 $base-border-radius: 0.5rem;
@@ -15,10 +18,10 @@ $row-compensation: -0.5rem;
 $col-compensation: 0.5rem;
 
 $screen-xs-min: 0;
-$screen-sm-min: 45rem;
-$screen-md-min: 64rem;
-$screen-lg-min: 75rem;
+$screen-sm-min: 76.8rem;
+$screen-md-min: 99.2rem;
+$screen-lg-min: 120rem;
 
-$container-sm: 46rem;
-$container-md: 65rem;
-$container-lg: 76rem;
+$container-sm: 77.8rem;
+$container-md: 100.2rem;
+$container-lg: 121rem;

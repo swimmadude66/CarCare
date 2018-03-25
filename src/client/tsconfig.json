@@ -16,6 +16,7 @@
         "paths": {
             "@components/*": ["components/*", "components/index"],
             "@core/*": ["core/*", "core/index"],
+            "@guards/*": ["guards/*", "guards/index"],
             "@models/*": ["models/*", "models/index"],
             "@modules/*": ["modules/*", "modules/index"],
             "@services/*": ["services/*", "services/index"],

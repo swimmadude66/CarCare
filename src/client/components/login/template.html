@@ -1,10 +1,12 @@
 <div class="container h-100">
     <div class="row page-row h-100">
-        <div class="col-12 col-md-6 mx-auto">
+        <div class="col-xs-12 col-sm-8 col-md-6 mx-auto">
             <div class="login-form-container">
                 <form [formGroup]="form" (submit)="login()">
-                    <input class="form-control" type="email" formControlName="Email">
-                    <input class="form-control" type="password" formControlName="Password">
+                    <label for="txtEmail">Email</label>
+                    <input id="txtEmail" class="form-control" type="email" formControlName="Email" placeholder="Your email">
+                    <label for="txtPassword">Password</label>
+                    <input id="txtPassword" class="form-control" type="password" formControlName="Password" placeholder="Password">
                     <button class="btn btn-success" type="submit" [disabled]="form.invalid">Log In</button>
                 </form>
                 <span class="error-text" *ngIf="serverError?.length">{{serverError}}</span>

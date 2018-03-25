@@ -17,4 +17,4 @@ import '@angular/platform-browser-dynamic';
 import {Observable} from 'rxjs/Observable';
 import {Subscription} from 'rxjs/Subscription';
 import {Subject} from 'rxjs/Subject';
-import {map, flatMap, take, combineLatest} from 'rxjs/operators';
+import {map, flatMap, take, combineLatest, tap} from 'rxjs/operators';

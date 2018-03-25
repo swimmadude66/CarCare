@@ -3,7 +3,7 @@
 @mixin button($background, $text) {
     background-color: $background;
     color: $text;
-
+    border: none;
     &:hover {
         background-color: darken($background, 5%);
     }
@@ -11,13 +11,22 @@
 
 @mixin button-inverse($background, $text) {
     @include button($text, $background);
-    border: 0.125rem solid $background;
+    border: 0.1rem solid $background;
+}
+
+button {
+    box-sizing: border-box;
+    display: block;
 }
 
 .btn {
     border-radius: $base-border-radius;
-    padding: 0.25rem 0.75rem;
-    font-size: 1.5rem;
+    padding: 0.5rem 1rem;
+    font-size: 2rem;
+    width: 100%;
+    @media(min-width: $screen-md-min) {
+        width: unset;
+    }
 }
 
 .btn-success {

@@ -7,7 +7,9 @@
 }
 
 .login-form-container {
-    background: #ccc;
-    border: 0.25rem groove #666;
+    background: #FFF;
+    border: 0.2rem outset #AAA;
     padding: 2rem 3rem;
+    border-radius: $base-border-radius;
+    box-shadow: 0.5rem 0.7rem 0.5rem #DDD;
 }

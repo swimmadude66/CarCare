@@ -1,5 +1,5 @@
 import {OnInit, OnDestroy} from '@angular/core';
-import {Subscription} from 'rxjs/Rx';
+import {Subscription} from 'rxjs/Subscription';
 
 export class SubscriberComponent implements OnDestroy {
 

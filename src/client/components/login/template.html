@@ -2,7 +2,12 @@
     <div class="row page-row h-100">
         <div class="col-12 col-md-6 mx-auto">
             <div class="login-form-container">
-                <p>I'm vertically centered</p>
+                <form [formGroup]="form" (submit)="login()">
+                    <input class="form-control" type="email" formControlName="Email">
+                    <input class="form-control" type="password" formControlName="Password">
+                    <button class="btn btn-success" type="submit" [disabled]="form.invalid">Log In</button>
+                </form>
+                <span class="error-text" *ngIf="serverError?.length">{{serverError}}</span>
             </div>
         </div>
     </div>

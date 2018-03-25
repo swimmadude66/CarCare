@@ -1,5 +1,7 @@
 CREATE DATABASE IF NOT EXISTS `carcare` /*!40100 DEFAULT CHARACTER SET utf8mb4 */;
 
+USE `carcare`;
+
 CREATE TABLE IF NOT EXISTS `users` (
   `UserId` int(11) NOT NULL AUTO_INCREMENT,
   `Email` varchar(128) NOT NULL,

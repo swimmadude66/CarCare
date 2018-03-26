@@ -16,7 +16,8 @@ import {IsLoggedInGuard, NotLoggedInGuard} from '@guards/';
         RouterModule.forRoot(
             [
                 {path: '', pathMatch: 'full', canActivate: [IsLoggedInGuard], component: DemoComponent},
-                {path: 'login', canLoad: [NotLoggedInGuard], loadChildren: './routes/+login#LoginLazyModule'}
+                {path: 'login', canLoad: [NotLoggedInGuard], loadChildren: './routes/+login#LoginLazyModule'},
+                {path: 'signup', canLoad: [NotLoggedInGuard], loadChildren: './routes/+signup#SignupLazyModule'},
             ]
         )
     ],

@@ -51,15 +51,15 @@
 .col-reverse {
     flex-direction: column-reverse;
 }
-.start {
+.items-start {
     justify-content: flex-start;
     text-align: start;
 }
-.center {
+.items-center {
     justify-content: center;
     text-align: center;
 }
-.end {
+.items-end {
     justify-content: flex-end;
     text-align: end;
 }
@@ -71,6 +71,29 @@
 }
 .items-bottom {
     align-items: flex-end;
+}
+.left {
+    justify-self: left;
+    text-align: left;
+}
+.start {
+    justify-self: start;
+    text-align: start;
+}
+.stretch {
+    justify-self: stretch;
+}
+.center {
+    justify-self: center;
+    text-align: center;
+}
+.end {
+    justify-self: end;
+    text-align: end;
+}
+.right {
+    justify-self: right;
+    text-align: right;
 }
 .top {
     align-self: flex-start;

@@ -2,7 +2,7 @@ import {Component} from '@angular/core';
 import {FormBuilder, FormGroup, Validators, FormControl} from '@angular/forms';
 import {Router} from '@angular/router';
 import {SubscriberComponent} from '@core/';
-import {AuthService} from '@services/*';
+import {AuthService} from '@services/';
 
 @Component({
     selector: 'login',

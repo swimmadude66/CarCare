@@ -2,12 +2,27 @@
     <div class="row page-row h-100">
         <div class="col-xs-12 col-sm-8 col-md-6 mx-auto">
             <div class="login-form-container">
+                <h1 class="form-title">Log in</h1>
                 <form [formGroup]="form" (submit)="login()">
                     <label for="txtEmail">Email</label>
-                    <input id="txtEmail" class="form-control" type="email" formControlName="Email" placeholder="Your email">
+                    <input 
+                        id="txtEmail" 
+                        class="form-control" 
+                        type="email" 
+                        formControlName="Email" 
+                        placeholder="Email"
+                        autocomplete="email"
+                    >
                     <label for="txtPassword">Password</label>
-                    <input id="txtPassword" class="form-control" type="password" formControlName="Password" placeholder="Password">
-                    <button class="btn btn-success" type="submit" [disabled]="form.invalid">Log In</button>
+                    <input 
+                        id="txtPassword" 
+                        class="form-control" 
+                        type="password" 
+                        formControlName="Password" 
+                        placeholder="Password" 
+                        autocomplete="current-password"
+                    >
+                    <button class="btn btn-success right" type="submit" [disabled]="form.invalid">Log In</button>
                 </form>
                 <span class="error-text" *ngIf="serverError?.length">{{serverError}}</span>
             </div>

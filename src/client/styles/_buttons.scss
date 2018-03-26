@@ -17,6 +17,13 @@
 button {
     box-sizing: border-box;
     display: block;
+    cursor: pointer;
+
+    &:disabled {
+        background-color: #ccc !important;
+        color: #999;
+        cursor: not-allowed;
+    }
 }
 
 .btn {

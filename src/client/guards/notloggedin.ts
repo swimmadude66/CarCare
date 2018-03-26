@@ -36,8 +36,8 @@ export class NotLoggedInGuard implements CanLoad, CanActivate, CanActivateChild 
         .pipe(
             tap(isLoggedIn => {
                 this.loggedIn = isLoggedIn;
-                if (!isLoggedIn) {
-                    return this._router.navigate(['/login']);
+                if (isLoggedIn) {
+                    return this._router.navigate(['/']);
                 }
             }),
             map(isLoggedIn => !isLoggedIn)

@@ -14,33 +14,22 @@ export class SignupComponent extends SubscriberComponent {
     form: FormGroup;
     error: string;
 
+    formControls = {
+        email: new FormControl('', [Validators.required, Validators.email]),
+        password: new FormControl('', [Validators.required]),
+        confirmPassword: new FormControl('', [Validators.required])
+    };
+
     constructor(
         private _fb: FormBuilder,
         private _router: Router,
         private _auth: AuthService
     ) {
         super();
-        this.form = _fb.group({
-            email: new FormControl('', [Validators.required, Validators.email]),
-            password: new FormControl('', [Validators.required]),
-            confirmPassword: new FormControl('', [Validators.required])
-        },
+        this.form = _fb.group(this.formControls,
         {
             validator: PasswordValidation.matchPassword
         });
-    }
-
-    hasError(controlName: string) {
-        const control = this.form.get(controlName);
-        return control.dirty && control.invalid;
-    }
-
-    getError(controlName: string, friendlyName: string): string {
-        const control = this.form.get(controlName);
-        if (control.dirty && control.invalid) {
-            return FormErrorParser.parseErrors(friendlyName, control.errors);
-        }
-        return null;
     }
 
     signup(): void {

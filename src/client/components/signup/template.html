@@ -4,39 +4,38 @@
             <div class="signup-form-container">
                 <h1 class="form-title">Sign up</h1>
                 <form [formGroup]="form" (ngSubmit)="signup()">
-                    <label for="txtEmail">Email</label>
-                    <input 
-                        id="txtEmail" 
-                        class="form-control" 
-                        type="email" 
-                        formControlName="email" 
+                    <input-group
+                        id="txtEmail"
+                        type="email"
+                        name="email"
+                        [formControl]="formControls['email']"
+                        [errors]="formControls['email']?.errors"
+                        label="Email"
                         placeholder="Email"
                         autocomplete="email"
-                    >
-                    <p class="error-text" *ngIf="hasError('email')">{{getError('email', 'Email')}}</p>
-                    <label for="txtPassword">Password</label>
-                    <input 
-                        id="txtPassword" 
-                        class="form-control" 
-                        type="password" 
-                        formControlName="password" 
-                        placeholder="Password" 
+                    ></input-group>
+                    <input-group
+                        id="txtPassword"
+                        type="password"
+                        name="password"
+                        [formControl]="formControls['password']"
+                        [errors]="formControls['password']?.errors"
+                        label="New Password"
+                        placeholder="New Password"
                         autocomplete="new-password"
-                    >
-                    <p class="error-text" *ngIf="hasError('password')">{{getError('password', 'Password')}}</p>
-                    <label for="txtConfirmPassword">Confirm Password</label>
-                    <input 
-                        id="txtConfirmPassword" 
-                        class="form-control" 
-                        type="password" 
-                        formControlName="confirmPassword" 
-                        placeholder="Confirm Password" 
+                    ></input-group>
+                    <input-group
+                        id="txtConfirmPassword"
+                        type="password"
+                        name="password"
+                        [formControl]="formControls['confirmPassword']"
+                        [errors]="formControls['confirmPassword']?.errors"
+                        label="Confirm Password"
+                        placeholder="Confirm Password"
                         autocomplete="new-password"
-                    >
-                    <p class="error-text" *ngIf="hasError('confirmPassword')">{{getError('confirmPassword', 'Password Confirmation')}}</p>
-                    <button class="btn btn-success right" type="submit">Sign up</button>
+                    ></input-group>
+                    <button class="btn btn-success" type="submit">Sign up</button>
                 </form>
-                <p class="error-text" *ngIf="error?.length">{{error}}</p>
             </div>
         </div>
     </div>

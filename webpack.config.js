@@ -44,7 +44,6 @@ module.exports = {
                             ident: 'postcss',
                             plugins: function(loader){
                                 return [
-                                    uncss({html: [path.join(__dirname, './src/client/index.html'), path.join(__dirname, './src/client/**/*.html')]}),
                                     autoprefixer({remove: false, flexbox: true}),
                                     cssnano
                                 ]
@@ -71,7 +70,10 @@ module.exports = {
                                 ident: 'postcss',
                                 plugins: function(loader){
                                     return [
-                                        uncss({html: [path.join(__dirname, './src/client/index.html'), path.join(__dirname, './src/client/**/*.html')]}),
+                                        uncss({
+                                            html: [path.join(__dirname, './src/client/index.html'), path.join(__dirname, './src/client/**/*.html')],
+                                            ignore: [/has-error/, /disabled/, /hover/, /active/, /focus/]
+                                        }),
                                         autoprefixer({remove: false, flexbox: true}),
                                         cssnano
                                     ]
@@ -84,14 +86,64 @@ module.exports = {
                     ]
                 })
             },
+            {
+                test: /\.svg$/,
+                use: [
+                    {
+                        loader: 'file-loader'
+                    },
+                    {
+                        loader: 'svgo-loader',
+                        options: {
+                            plugins: [
+                                {convertColors: {shorthex: false}},
+                                {cleanupAttrs: true},
+                                {removeDoctype: true},
+                                {removeXMLProcInst: true},
+                                {removeComments: true},
+                                {removeMetadata: true},
+                                {removeTitle: true},
+                                {removeDesc: true},
+                                {removeUselessDefs: true},
+                                {removeXMLNS: true},
+                                {removeEditorsNSData: true},
+                                {removeEmptyAttrs: true},
+                                {removeHiddenElems: true},
+                                {removeEmptyText: true},
+                                {removeEmptyContainers: true},
+                                {removeViewBox: true},
+                                {cleanupEnableBackground: true},
+                                {minifyStyles: true},
+                                {convertStyleToAttrs: true},
+                                {convertPathData: true},
+                                {convertTransform: true},
+                                {removeUnknownsAndDefaults: true},
+                                {removeNonInheritableGroupAttrs: true},
+                                {removeUselessStrokeAndFill: true},
+                                {removeUnusedNS: true},
+                                {cleanupIDs: true},
+                                {cleanupNumericValues: true},
+                                {cleanupListOfValues: true},
+                                {moveElemsAttrsToGroup: true},
+                                {moveGroupAttrsToElems: true},
+                                {collapseGroups: true},
+                                {removeRasterImages: true},
+                                {mergePaths: true},
+                                {convertShapeToPath: true},
+                                {sortAttrs: true},
+                            ]
+                        }
+                    }
+                ]
+            },
             // fonts
             {
-                test: /\.((ttf)|(woff(2?))|(eot)|(svg))/,
+                test: /\.((ttf)|(woff(2?))|(eot))/,
                 loader: 'file-loader'
             },
             // images
             {
-                test: /\.((jpg)|(png)|(gif)|(bmp)|(ico)|(svg))/,
+                test: /\.((jpg)|(png)|(gif)|(bmp)|(ico))/,
                 loader: 'file-loader',
                 exclude: [path.join(__dirname, './src/client/assets')]
             },

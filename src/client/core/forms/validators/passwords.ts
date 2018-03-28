@@ -5,7 +5,7 @@ export class PasswordValidation {
     static matchPassword(AC: AbstractControl) {
        const passwordControl = AC.get('password');
        const confirmPasswordControl = AC.get('confirmPassword');
-        if(passwordControl.value !== confirmPassword.value) {
+        if(passwordControl.value !== confirmPasswordControl.value) {
             confirmPasswordControl.setErrors({matchPassword: true});
         } else {
             return null;

@@ -14,16 +14,18 @@ export class LoginComponent extends SubscriberComponent {
     form: FormGroup;
     serverError: string;
 
+    formControls = {
+        email: new FormControl('', [Validators.required, Validators.email]),
+        password: new FormControl('', [Validators.required])
+    };
+
     constructor(
         private _fb: FormBuilder,
         private _router: Router,
         private _auth: AuthService
     ) {
         super();
-        this.form = _fb.group({
-            Email: new FormControl('', [Validators.required, Validators.email]),
-            Password: new FormControl('', [Validators.required])
-        });
+        this.form = _fb.group(this.formControls);
     }
 
     login(): void {
@@ -32,7 +34,7 @@ export class LoginComponent extends SubscriberComponent {
             return;
         }
         this.addSubscription(
-            this._auth.login(this.form.get('Email').value, this.form.get('Password').value)
+            this._auth.login(this.form.get('email').value, this.form.get('password').value)
             .subscribe(
                 _ => {
                     this.form.reset();

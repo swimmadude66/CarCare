@@ -1,3 +1,2 @@
-export * from './subscriber';
-export * from './formerrors';
-export * from './validators/passwords';
+export * from './component/subscriber';
+export * from './forms';

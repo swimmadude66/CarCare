@@ -4,25 +4,27 @@
             <div class="login-form-container">
                 <h1 class="form-title">Log in</h1>
                 <form [formGroup]="form" (submit)="login()">
-                    <label for="txtEmail">Email</label>
-                    <input 
-                        id="txtEmail" 
-                        class="form-control" 
-                        type="email" 
-                        formControlName="Email" 
+                    <input-group
+                        id="txtEmail"
+                        type="email"
+                        name="email"
+                        [formControl]="formControls['email']"
+                        [errors]="formControls['email']?.errors"
+                        label="Email"
                         placeholder="Email"
                         autocomplete="email"
-                    >
-                    <label for="txtPassword">Password</label>
-                    <input 
-                        id="txtPassword" 
-                        class="form-control" 
-                        type="password" 
-                        formControlName="Password" 
-                        placeholder="Password" 
-                        autocomplete="current-password"
-                    >
-                    <button class="btn btn-success right" type="submit" [disabled]="form.invalid">Log In</button>
+                    ></input-group>
+                    <input-group
+                        id="txtPassword"
+                        type="password"
+                        name="password"
+                        [formControl]="formControls['password']"
+                        [errors]="formControls['password']?.errors"
+                        label="New Password"
+                        placeholder="New Password"
+                        autocomplete="new-password"
+                    ></input-group>
+                    <button class="btn btn-success" type="submit" [disabled]="form.invalid">Log In</button>
                 </form>
                 <span class="error-text" *ngIf="serverError?.length">{{serverError}}</span>
             </div>

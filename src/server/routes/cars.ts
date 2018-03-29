@@ -27,10 +27,25 @@ module.exports = (APP_CONFIG: Config) => {
         }
         carService.addCar(res.locals.usersession.UserId, body)
         .subscribe(
-            _ => res.send(true),
+            carId => res.send(carId),
             err => {
                 console.error(err);
                 return res.status(500).send('Could not add a car at this time');
+            }
+        );
+    });
+
+    router.get('/:carId', (req, res) => {
+        const carId = req.params.carId;
+        const userId = res.locals.usersession.UserId;
+        carService.getCar(userId, carId).subscribe(
+            car => res.send(car),
+            err => {
+                if (err === 'No such car') {
+                    return res.status(400).send(err);
+                }
+                console.error(err);
+                return res.status(500).send('Could not lookup car');
             }
         );
     });
@@ -43,7 +58,7 @@ module.exports = (APP_CONFIG: Config) => {
         body.CarId = req.params['carId'];
         carService.updateCar(res.locals.usersession.UserId, body)
         .subscribe(
-            _ => res.send(true),
+            carId => res.send(carId),
             err => {
                 console.error(err);
                 return res.status(500).send('Could not update car at this time');

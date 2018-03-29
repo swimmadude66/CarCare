@@ -21,7 +21,20 @@ export class CarService {
         )
     }
 
-    addCar(userId: number, car: Car): Observable<any> {
+    getCar(userId: number, carId: number): Observable<Car> {
+        return this._db.query('Select * from `cars` WHERE `Owner`=? and `CarId`=? LIMIT 1;', [userId, carId])
+        .flatMap(
+            cars => {
+                if (!cars || cars.length < 1) {
+                    return Observable.throw('No such car');
+                }
+                const car = cars[0];
+                return this._getMetadata([car.CarId]).map(metadataMap => car.Metadata = metadataMap[car.CarId]);
+            }
+        );
+    }
+
+    addCar(userId: number, car: Car): Observable<number> {
         const q = 'Insert into `cars` (`Make`, `Model`, `Trim`, `Color`, `Owner`, `CarName`, `License`, `VIN`, `PurchaseDate`, `CarPhoto`)'
         + ' VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);';
         return this._db.query(q, [car.Make, car.Model, car.Trim, car.Color, userId, car.CarName, car.License, car.VIN, car.PurchaseDate, car.CarPhoto])
@@ -35,7 +48,7 @@ export class CarService {
         });
     }
 
-    updateCar(userId: number, car: Car): Observable<any> {
+    updateCar(userId: number, car: Car): Observable<number> {
         const carId = car.CarId;
         delete car.Owner;
         delete car.CarId;

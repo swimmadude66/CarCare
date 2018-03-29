@@ -20,9 +20,9 @@
                         name="password"
                         [formControl]="formControls['password']"
                         [errors]="formControls['password']?.errors"
-                        label="New Password"
-                        placeholder="New Password"
-                        autocomplete="new-password"
+                        label="Password"
+                        placeholder="Password"
+                        autocomplete="current-password"
                     ></input-group>
                     <button class="btn btn-success" type="submit" [disabled]="form.invalid">Log In</button>
                 </form>

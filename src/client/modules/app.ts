@@ -2,9 +2,9 @@ import {NgModule} from '@angular/core';
 import {RouterModule} from '@angular/router';
 import {BrowserModule} from '@angular/platform-browser';
 import {SharedModule} from '@modules/shared';
-import {AppComponent, DemoComponent} from '@components/';
-import {AuthService} from '@services/';
+import {AppComponent, LoginComponent} from '@components/';
 import {IsLoggedInGuard, NotLoggedInGuard} from '@guards/';
+import {AuthService} from '@services/';
 
 @NgModule({
     bootstrap: [
@@ -15,15 +15,15 @@ import {IsLoggedInGuard, NotLoggedInGuard} from '@guards/';
         SharedModule,
         RouterModule.forRoot(
             [
-                {path: '', pathMatch: 'full', canActivate: [IsLoggedInGuard], component: DemoComponent},
-                {path: 'login', canLoad: [NotLoggedInGuard], loadChildren: './routes/+login#LoginLazyModule'},
+                {path: 'login', canActivate: [NotLoggedInGuard], component: LoginComponent},
                 {path: 'signup', canLoad: [NotLoggedInGuard], loadChildren: './routes/+signup#SignupLazyModule'},
+                {path: '', canLoad: [IsLoggedInGuard], loadChildren: './routes/+cars#CarsLazyModule'},
             ]
         )
     ],
     declarations: [
         AppComponent,
-        DemoComponent
+        LoginComponent
     ],
     providers: [
         AuthService,

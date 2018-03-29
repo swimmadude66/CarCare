@@ -1,19 +1,23 @@
 import {NgModule} from '@angular/core';
 import {RouterModule} from '@angular/router';
 import {SharedModule} from '@modules/shared';
-import {LoginComponent} from '@components/login/component';
+import {GarageComponent} from '@components/garage/component';
+import {CarsService} from '@services/cars/service';
 
 @NgModule({
     imports: [
         SharedModule,
         RouterModule.forChild(
             [
-                {path: '', pathMatch: 'full', component: LoginComponent},
+                {path: '', pathMatch: 'full', component: GarageComponent},
             ]
         )
     ],
     declarations: [
-        LoginComponent
+        GarageComponent
+    ],
+    providers: [
+        CarsService
     ]
 })
-export class LoginLazyModule {}
+export class CarsLazyModule {}

@@ -15,10 +15,6 @@
 }
 
 @mixin col-offset($numOffset) {
-    box-sizing: border-box;
-    flex: 0 0 auto;
-    padding-left: $col-compensation;
-    padding-right: $col-compensation;
     margin-left: col-width($numOffset);
 }
 

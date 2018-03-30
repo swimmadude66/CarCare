@@ -27,7 +27,7 @@ module.exports = (APP_CONFIG: Config) => {
         }
         carService.addCar(res.locals.usersession.UserId, body)
         .subscribe(
-            carId => res.send(carId),
+            carId => res.status(200).send(true),
             err => {
                 console.error(err);
                 return res.status(500).send('Could not add a car at this time');
@@ -38,7 +38,7 @@ module.exports = (APP_CONFIG: Config) => {
     router.get('/:carId', (req, res) => {
         const carId = req.params.carId;
         const userId = res.locals.usersession.UserId;
-        carService.getCar(userId, carId).subscribe(
+        carService.getCar(userId, +carId).subscribe(
             car => res.send(car),
             err => {
                 if (err === 'No such car') {
@@ -58,7 +58,7 @@ module.exports = (APP_CONFIG: Config) => {
         body.CarId = req.params['carId'];
         carService.updateCar(res.locals.usersession.UserId, body)
         .subscribe(
-            carId => res.send(carId),
+            carId => res.status(200).send(true),
             err => {
                 console.error(err);
                 return res.status(500).send('Could not update car at this time');
@@ -68,9 +68,9 @@ module.exports = (APP_CONFIG: Config) => {
 
     router.delete('/:carId', (req, res) => {
         const carId = req.params['carId'];
-        carService.deleteCar(res.locals.usersession, carId)
+        carService.deleteCar(res.locals.usersession.UserId, +carId)
         .subscribe(
-            _ => res.send(true),
+            _ => res.status(200).send(true),
             err => {
                 console.error(err);
                 res.status(500).send('Could not delete car');

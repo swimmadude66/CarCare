@@ -16,7 +16,10 @@ export class CarService {
                 }
                 const carIds = cars.map(c => c.CarId);
                 return this._getMetadata(carIds)
-                .map(metadataMap=> cars.map(c => c.Metadata = metadataMap[c.CarId]));
+                .map(metadataMap=> {
+                    cars.forEach(c => c.Metadata = metadataMap[c.CarId]);
+                    return cars;
+                });
             }
         )
     }
@@ -29,7 +32,11 @@ export class CarService {
                     return Observable.throw('No such car');
                 }
                 const car = cars[0];
-                return this._getMetadata([car.CarId]).map(metadataMap => car.Metadata = metadataMap[car.CarId]);
+                return this._getMetadata([car.CarId])
+                .map(metadataMap=> {
+                    car.Metadata = metadataMap[car.CarId];
+                    return car;
+                });
             }
         );
     }
@@ -70,7 +77,7 @@ export class CarService {
     }
 
     deleteCar(userId: number, carId: number): Observable<any> {
-        return this._db.query('Delete from `cara` WHERE `CarId`=? AND `Owner`=?;', [carId, userId])
+        return this._db.query('Delete from `cars` WHERE `CarId`=? AND `Owner`=?;', [carId, userId])
         .flatMap(result => {
             if (result.affectedRows) {
                 return this._removeExtraMetadata(carId, {}).map(_ => carId);
@@ -106,6 +113,9 @@ export class CarService {
 
     private _removeExtraMetadata(carId: number, metadata: {[Key: string]: string}): Observable<any> {
         const keys = Object.keys(metadata);
+        if (!metadata || !keys || keys.length < 1) {
+            return Observable.of({});
+        }
         const q = 'Delete from `car_metadata` Where `CarId`=? AND `Key` not in (?)';
         return this._db.query(q, [carId, keys]);
     }

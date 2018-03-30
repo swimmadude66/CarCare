@@ -6,13 +6,13 @@ var ts_project	    = require('gulp-typescript').createProject('./src/server/tsco
 var spawn            = require('child_process').spawn;
 var server_proc;
 
-gulp.task('compile_node', function(){
+gulp.task('compile-node', function(){
 	return gulp.src('./src/server/**/*.ts')
 	.pipe(ts_project()).js
 	.pipe(gulp.dest('dist/server/'));
 });
 
-gulp.task('start-server', ['compile_node'], function(){
+gulp.task('start-server', ['compile-node'], function(){
     if (server_proc) {
         server_proc.kill();
         server_proc = undefined;
@@ -103,4 +103,4 @@ gulp.task('watch', ['start-server', 'webpack-watch'], function(){
 });
 
 // Default Task
-gulp.task('default', ['compile_node', 'webpack']);
+gulp.task('default', ['compile-node', 'webpack']);

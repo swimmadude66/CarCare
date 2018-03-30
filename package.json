@@ -21,7 +21,11 @@
     "dev": "gulp watch",
     "clean": "rimraf dist",
     "test": "mocha",
-    "webpack": "webpack"
+    "webpack": "webpack",
+    "prebuild-server": "rimraf dist/server",
+    "build-server": "gulp compile-node",
+    "prebuild-client": "rimraf dist/client",
+    "build-client": "gulp webpack"
   },
   "dependencies": {
     "@angular/animations": "5.2.9",

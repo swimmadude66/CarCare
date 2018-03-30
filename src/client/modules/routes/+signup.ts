@@ -1,7 +1,7 @@
 import {NgModule} from '@angular/core';
 import {RouterModule} from '@angular/router';
 import {SharedModule} from '@modules/shared';
-import {SignupComponent} from '@components/signup/component';
+import {SignupComponent} from '@components/auth/signup/component';
 
 @NgModule({
     imports: [

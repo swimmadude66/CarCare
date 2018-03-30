@@ -1,8 +1,8 @@
 import {NgModule} from '@angular/core';
 import {RouterModule} from '@angular/router';
 import {SharedModule} from '@modules/shared';
-import {GarageComponent} from '@components/garage/component';
 import {CarsService} from '@services/cars/service';
+import {GarageComponent, CarFormComponent} from '@components/cars';
 
 @NgModule({
     imports: [
@@ -14,7 +14,8 @@ import {CarsService} from '@services/cars/service';
         )
     ],
     declarations: [
-        GarageComponent
+        GarageComponent,
+        CarFormComponent
     ],
     providers: [
         CarsService

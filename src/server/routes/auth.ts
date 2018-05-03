@@ -3,6 +3,7 @@ import {createHash} from 'crypto';
 import * as uuid from 'uuid/v4';
 import {Observable} from 'rxjs/Rx';
 import {Config} from '../models/config';
+import {LoggedError} from '../models/error';
 
 const COOKIE_OPTIONS = {
     path: '/',
@@ -16,7 +17,7 @@ module.exports = (APP_CONFIG: Config) => {
     const db = APP_CONFIG.db;
     const sessionManager = APP_CONFIG.sessionManager;
 
-    router.post('/signup', (req, res) => {
+    router.post('/signup', (req, res, next) => {
         const body = req.body;
         if (!body || !body.Email || !body.Password) {
             return res.status(400).send('Email and Password are required fields');
@@ -30,15 +31,12 @@ module.exports = (APP_CONFIG: Config) => {
                     res.cookie(APP_CONFIG.cookie_name, result.SessionKey, {...COOKIE_OPTIONS, expires: new Date(result.Expires * 1000), secure: req.secure});
                     return res.send();
                 },
-                err => {
-                    console.error(err);
-                    res.status(400).send('Could not complete signup');
-                }
+                err => next(new LoggedError(err, 'Could not complete signup', 400)) // return a 400 always to avoid user enumeration
             );
         }
     });
 
-    router.post('/login', (req, res) => {
+    router.post('/login', (req, res, next) => {
         const body = req.body;
         if (!body || !body.Email || !body.Password) {
             return res.status(400).send('Email and Password are required fields');
@@ -64,10 +62,9 @@ module.exports = (APP_CONFIG: Config) => {
                 },
                 err => {
                     if (err === 'Incorrect username or password') {
-                        return res.status(400).send('Incorrect username or password');
+                        return next(new LoggedError(err, 'Incorrect username or password', 400));
                     } else {
-                        console.error(err);
-                        return res.status(500).send('Could not login at this time');
+                        return next(new LoggedError(err, 'Could not login at this time', 500));
                     }
                 }
             )
@@ -78,21 +75,18 @@ module.exports = (APP_CONFIG: Config) => {
         return res.send(!!res.locals.usersession);
     });
 
-    router.get('/sessions', (req, res) => {
+    router.get('/sessions', (req, res, next) => {
         if (!res.locals.usersession || !res.locals.usersession.UserId) {
             return res.send([]);
         }
         sessionManager.getActiveSessions(res.locals.usersession.UserId)
         .subscribe(
             sessions => res.send(sessions),
-            err => {
-                console.error(err);
-                res.status(500).send('Cannot fetch active sessions');
-            }
+            err => next(new LoggedError(err, 'Cannot fetch active sessions', 500))
         )
     });
 
-    router.delete('/sessions/:sessionKey', (req, res) => {
+    router.delete('/sessions/:sessionKey', (req, res, next) => {
         const sessionKey = req.params['sessionKey'];
         if (res.locals.usersession && res.locals.usersession.UserId && res.locals.usersession.SessionKey) {
             sessionManager.deactivateSession(res.locals.usersession.UserId, sessionKey)
@@ -106,12 +100,13 @@ module.exports = (APP_CONFIG: Config) => {
                     } else {
                         return res.status(400).send('Could not find that session');
                     }
-                }  
+                },
+                err => next(new LoggedError(err, 'Could not lookup that session', 500))
             )
         }
     });
 
-    router.post('/logout', (req, res) => {
+    router.post('/logout', (req, res, next) => {
         if (res.locals.usersession && res.locals.usersession.SessionKey && res.locals.usersession.UserId) {
             res.clearCookie(APP_CONFIG.cookie_name, {...COOKIE_OPTIONS, secure: req.secure});
             sessionManager.deactivateSession(res.locals.usersession.UserId, res.locals.usersession.SessionKey)

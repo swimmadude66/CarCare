@@ -12,6 +12,7 @@ import * as userAgent from 'express-useragent';
 import {Config} from './models/config';
 import {DatabaseService} from './services/db';
 import {SessionManager} from './services/session';
+import {Error} from './models/error';
 
 dotenv.config({silent: true});
 
@@ -63,12 +64,17 @@ app.use('/api', require('./routes/api')(APP_CONFIG));
 /*------- Angular client on Root ------- */
 app.set('view engine', 'html');
 app.use(express.static(APP_CONFIG.client_root));
-app.get('/*', function(req, res){
+app.get('/*', (req, res) => {
   return res.sendFile(join(APP_CONFIG.client_root, './index.html'));
 });
 
-app.all('*', function(req, res){
+app.all('*', (req, res) => {
   return res.status(404).send('404 UNKNOWN ROUTE');
+});
+
+app.use((err: Error, req, res, next) => {
+    console.error(err.originalError);
+    res.status(err.status).send(err.message);
 });
 
 server.listen(APP_CONFIG.port);

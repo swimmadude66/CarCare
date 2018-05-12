@@ -1,5 +1,6 @@
 import {Router} from 'express';
 import {Config} from '../models/config';
+import {tap} from 'rxjs/operators';
 
 module.exports = (APP_CONFIG: Config) => {
     const router = Router();
@@ -16,11 +17,13 @@ module.exports = (APP_CONFIG: Config) => {
         }
         const authZ = req.signedCookies[APP_CONFIG.cookie_name];
         sessionManager.getUserSession(authZ)
-        .do(result => {
-            if (result && result.SessionKey) {
-                sessionManager.updateAccess(result.SessionKey).subscribe(_ => _, err=> console.error(err));
-            }
-        })
+        .pipe(
+            tap(result => {
+                if (result && result.SessionKey) {
+                    sessionManager.updateAccess(result.SessionKey).subscribe(_ => _, err=> console.error(err));
+                }
+            })
+        )
         .subscribe(
             result => {
                 if (!result) {

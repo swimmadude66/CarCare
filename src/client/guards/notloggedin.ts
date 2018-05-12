@@ -8,7 +8,7 @@ import {
     ActivatedRouteSnapshot, 
     RouterStateSnapshot
 } from '@angular/router';
-import {Observable} from 'rxjs/Observable';
+import {Observable} from 'rxjs';
 import {tap, map} from 'rxjs/operators';
 import {AuthService} from '@services/*';
 

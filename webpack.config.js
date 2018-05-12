@@ -4,13 +4,13 @@ var workbox = require('workbox-webpack-plugin');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var HtmlWebpackExcludeAssetsPlugin = require('html-webpack-exclude-assets-plugin');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
-var uncss = require('postcss-uncss');
 var autoprefixer = require('autoprefixer');
 var cssnano = require('cssnano');
 var CopyWebpackPlugin = require('copy-webpack-plugin');
 var CircularDependencyPlugin = require('circular-dependency-plugin');
 var AotPlugin = require('@ngtools/webpack').AngularCompilerPlugin;
 var commonsChunkPlugin = webpack.optimize.CommonsChunkPlugin;
+var NormalModuleReplacementPlugin = webpack.NormalModuleReplacementPlugin;
 
 module.exports = {
     entry: {
@@ -70,13 +70,9 @@ module.exports = {
                                 ident: 'postcss',
                                 plugins: function(loader){
                                     return [
-                                        uncss({
-                                            html: [path.join(__dirname, './src/client/index.html'), path.join(__dirname, './src/client/**/*.html')],
-                                            ignore: [/has-error/, /disabled/, /hover/, /active/, /focus/]
-                                        }),
                                         autoprefixer({remove: false, flexbox: true}),
                                         cssnano
-                                    ]
+                                    ];
                                 }
                             }
                         },
@@ -155,7 +151,6 @@ module.exports = {
         ]
     },
     plugins: [
-        new HtmlWebpackExcludeAssetsPlugin(),
         new HtmlWebpackPlugin({
             filename: path.join(__dirname, './dist/client/index.html'),
             template: path.join(__dirname, './src/client/index.html'),
@@ -176,6 +171,7 @@ module.exports = {
                 }
             },
         }),
+        new HtmlWebpackExcludeAssetsPlugin(),
         new AotPlugin({
             tsConfigPath: path.join(__dirname, './src/client/tsconfig.json'),
             mainPath: path.join(__dirname, './src/client/main.ts'),
@@ -201,6 +197,9 @@ module.exports = {
                 to: path.join(__dirname, './dist/client/assets')
             }
         ]),
+        new NormalModuleReplacementPlugin(/environments\/environment/, function(resource) {
+            resource.request = resource.request.replace(/environment$/, (process.env.BUILD_MODE === 'development' ? 'devEnvironment':'prodEnvironment'));
+        }),
         new workbox.GenerateSW({
             swDest: 'sw.js',
             clientsClaim: true,

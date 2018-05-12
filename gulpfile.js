@@ -25,7 +25,7 @@ gulp.task('start-server', ['compile-node'], function(){
 
 gulp.task('webpack', function(done) {
     var config = webpackConfig;
-    
+    process.env.BUILD_MODE = 'production';
     config.plugins.push(
         new webpack.optimize.UglifyJsPlugin({
             compress: {
@@ -62,6 +62,7 @@ gulp.task('webpack', function(done) {
 
 gulp.task('webpack-watch', function() {
     var config = webpackConfig;
+    process.env.BUILD_MODE = 'development';
     config.watch = true;
     config.cache = true;
     config.bail = false;
